@@ -38,6 +38,7 @@ dependencies:
   get: ^4.6.5
   http: ^0.13.5
   flutter_launcher_icons: ^0.13.0
+  dio: ^5.1.2
 
 dev_dependencies:
   flutter_test:

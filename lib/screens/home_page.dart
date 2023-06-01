@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_dem/models/model.dart';
+import 'package:get_dem/models/user_allReq_model.dart';
+import 'package:get_dem/screens/song_screen.dart';
+import 'package:get_dem/services/helpher.dart';
 import 'package:get_dem/services/service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,25 +14,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Entry> entries = [];
+  List<UserAllReqModel> entry = [];
+
+  // List<Entry> entries = [];
   RxBool isLoading = false.obs;
 
-  void _fetchSongs() async {
+  /* void _fetchSongs() async {
     isLoading.value = true;
-    /* setState(() {
+    */ /* setState(() {
       isLoading = true;
-    });*/
+    });*/ /*
     var response = await Service.fetchItem();
     entries = response.entries;
     isLoading.value = false;
-    /*setState(() {
+    */ /*setState(() {
       isLoading = false;
-    });*/
+    });*/ /*
+  }*/
+
+  Future<void> fetchData() async {
+    isLoading.value = true;
+    entry = await ApiService.fetchItem();
+    isLoading.value = false;
   }
 
   @override
   void initState() {
-    _fetchSongs();
+    // _fetchSongs();
+    fetchData();
     super.initState();
   }
 
@@ -69,70 +81,81 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : ListView.builder(
-                  itemCount: entries.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: const CircleAvatar(
-                        backgroundImage: AssetImage('assets/music.png'),
+              : entry.isEmpty
+                  ? Center(
+                      child: Text(
+                        "No Data Found",
+                        style: TextStyle(color: Colors.red, fontSize: 35),
                       ),
-                      title: Text(entries[index].api),
-                      subtitle: Text(entries[index].description),
-                      trailing: PopupMenuButton(
-                        color: Colors.deepPurple,
-                        icon: const Icon(
-                          Icons.more_vert,
-                          color: Colors.white,
-                        ),
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            PopupMenuItem(
-                              value: '1',
-                              child: const Text(
-                                'Play later',
-                              ),
-                              onTap: () {},
+                    )
+                  : ListView.builder(
+                      itemCount: entry.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: const CircleAvatar(
+                            backgroundImage: AssetImage('assets/music.png'),
+                          ),
+                          title: Text(entry[index].name!.toString()),
+                          subtitle: Text(entry[index].email!.toString()),
+                          trailing: PopupMenuButton(
+                            color: Colors.deepPurple,
+                            icon: const Icon(
+                              Icons.more_vert,
+                              color: Colors.white,
                             ),
-                            PopupMenuItem(
-                              value: '2',
-                              child: const Text(
-                                'Add to queue',
-                              ),
-                              onTap: () {},
-                            ),
-                            PopupMenuItem(
-                              value: '3',
-                              child: const Text(
-                                'Add to playlist',
-                              ),
-                              onTap: () {},
-                            ),
-                            PopupMenuItem(
-                              value: '4',
-                              child: const Text(
-                                'Delete',
-                              ),
-                              onTap: () {},
-                            ),
-                            PopupMenuItem(
-                              value: '5',
-                              child: const Text(
-                                'Share',
-                              ),
-                              onTap: () {},
-                            ),
-                          ];
-                        },
-                      ),
-                      onTap: () {
-                        Get.toNamed("/song", arguments: [
-                          {'first': entries[index].api},
-                          {'second': entries[index].description}
-                        ]);
+                            itemBuilder: (BuildContext context) {
+                              return [
+                                PopupMenuItem(
+                                  value: '1',
+                                  child: const Text(
+                                    'Play later',
+                                  ),
+                                  onTap: () {},
+                                ),
+                                PopupMenuItem(
+                                  value: '2',
+                                  child: const Text(
+                                    'Add to queue',
+                                  ),
+                                  onTap: () {},
+                                ),
+                                PopupMenuItem(
+                                  value: '3',
+                                  child: const Text(
+                                    'Add to playlist',
+                                  ),
+                                  onTap: () {},
+                                ),
+                                PopupMenuItem(
+                                  value: '4',
+                                  child: const Text(
+                                    'Delete',
+                                  ),
+                                  onTap: () {},
+                                ),
+                                PopupMenuItem(
+                                  value: '5',
+                                  child: const Text(
+                                    'Share',
+                                  ),
+                                  onTap: () {},
+                                ),
+                              ];
+                            },
+                          ),
+                          onTap: () {
+                           /* Get.to(SongScreen, arguments: [
+                              {'first': entry[index].name},
+                              {'second': entry[index].email},
+                            ]);*/
+                            Get.toNamed("/song", arguments: [
+                              {'first': entry[index].name!},
+                              {'second': entry[index].email!}
+                            ]);
+                          },
+                        );
                       },
                     );
-                  },
-                );
         }),
       ),
     );

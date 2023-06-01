@@ -80,18 +80,22 @@ class _SongScreenState extends State<SongScreen> {
                   ),
                   Obx(() {
                     return IconButton(
-                      onPressed: () {
-                        isFilled.value = !isFilled.value;
-                        setState(() {});
-                      },
-                      icon: Icon(
+                        onPressed: () {
+                          isFilled.value = !isFilled.value;
+                          setState(() {});
+                        },
+                        icon: isFilled.value
+                            ? Icon(Icons.favorite, color: Colors.red)
+                            : Icon(Icons.favorite_outline, color: Colors.white)
+
+                        /*Icon(
                         isFilled.value
                             ? Icons.favorite
                             : Icons.favorite_outline,
-                        color: Colors.white,
+                        color: Colors.red,
                         size: 30,
-                      ),
-                    );
+                      ),*/
+                        );
                   }),
                 ],
               ),
